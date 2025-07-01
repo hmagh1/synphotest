@@ -11,7 +11,7 @@ use symphonia::core::io::MediaSourceStream;
 use symphonia::core::meta::MetadataOptions;
 use symphonia::core::formats::FormatOptions;
 use tempfile::NamedTempFile;
-use hyper::Server;
+use hyper::server::Server;
 
 #[tokio::main]
 async fn main() {
@@ -27,9 +27,9 @@ async fn main() {
 }
 
 async fn analyze_audio(mut multipart: Multipart) -> impl IntoResponse {
-    while let Some(mut field) = multipart.next_field().await.unwrap() {
-        let name = field.name().unwrap_or("file").to_string(); // 🔑 Clone ici
-        let data = field.bytes().await.unwrap();               // Puis consomme field
+    while let Some(field) = multipart.next_field().await.unwrap() {
+        let name = field.name().unwrap_or("file").to_string();
+        let data = field.bytes().await.unwrap();
 
         let mut tempfile = NamedTempFile::new().unwrap();
         tempfile.write_all(&data).unwrap();
