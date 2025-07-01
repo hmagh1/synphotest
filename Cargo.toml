@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 symphonia = { version = "0.5", features = ["aac", "mp3", "flac"] }
-axum = "0.7"
+axum = { version = "0.7", features = ["multipart"] }
 tokio = { version = "1", features = ["full"] }
 tempfile = "3"
 bytes = "1"
