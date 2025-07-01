@@ -19,7 +19,9 @@ use tower::ServiceBuilder;
 async fn main() {
     let app = Router::new().route("/analyze", post(analyze_audio));
 
-  let addr = SocketAddr::from(([127, 0, 0, 1], 8088));
+let port = std::env::var("PORT").unwrap_or_else(|_| "8080".to_string());
+let addr = format!("0.0.0.0:{}", port).parse().unwrap();
+
 
     println!("🚀 Serveur lancé sur http://{}", addr);
 
