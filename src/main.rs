@@ -25,7 +25,7 @@ async fn analyze() -> Json<serde_json::Value> {
     let format = probed.format;
 
     Json(json!({
-        "format": format.format_name(),
+        "format": probed.format.format_info().long_name,
         "nb_tracks": format.tracks().len()
     }))
 }
@@ -36,8 +36,8 @@ async fn main() {
     let addr = SocketAddr::from(([0, 0, 0, 0], 8080));
 
     println!("Serveur lancé sur http://0.0.0.0:8080");
-    axum::Server::bind(&addr)
-        .serve(app.into_make_service())
+    axum::serve(tokio::net::TcpListener::bind(addr).await.unwrap(), app.into_make_service())
         .await
         .unwrap();
 }
+
