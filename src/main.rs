@@ -25,10 +25,11 @@ async fn analyze() -> Json<serde_json::Value> {
     let format = probed.format;
 
     Json(json!({
-        "format": probed.format.format_info().long_name,
+        "format": format.format_name(), // ✅ correction ici
         "nb_tracks": format.tracks().len()
     }))
 }
+
 
 #[tokio::main]
 async fn main() {
