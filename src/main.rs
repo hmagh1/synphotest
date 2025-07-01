@@ -1,17 +1,19 @@
 use axum::{
-    routing::post,
     extract::Multipart,
     response::IntoResponse,
+    routing::post,
     Router,
 };
-use std::{net::SocketAddr, io::Write};
-use symphonia::core::probe::Hint;
+use std::{io::Write, net::SocketAddr};
+use symphonia::core::{
+    formats::FormatOptions,
+    io::MediaSourceStream,
+    meta::MetadataOptions,
+    probe::Hint,
+};
 use symphonia::default::get_probe;
-use symphonia::core::io::MediaSourceStream;
-use symphonia::core::meta::MetadataOptions;
-use symphonia::core::formats::FormatOptions;
 use tempfile::NamedTempFile;
-use hyper::server::Server;
+use tower::ServiceBuilder;
 
 #[tokio::main]
 async fn main() {
@@ -20,8 +22,7 @@ async fn main() {
     let addr = SocketAddr::from(([0, 0, 0, 0], 8080));
     println!("🚀 Serveur lancé sur http://{}", addr);
 
-    Server::bind(&addr)
-        .serve(app.into_make_service())
+    axum::serve(tokio::net::TcpListener::bind(addr).await.unwrap(), app)
         .await
         .unwrap();
 }
