@@ -22,13 +22,14 @@ async fn analyze() -> Json<serde_json::Value> {
         Err(_) => return Json(json!({ "error": "Format non reconnu" })),
     };
 
-    let format = probed.format;
+    let format = &probed.format;
 
     Json(json!({
-         "format": probed.format.format_type().to_string(),
+        "format": probed.format.format_name(), // ✅ C'EST ICI la bonne méthode
         "nb_tracks": format.tracks().len()
     }))
 }
+
 
 
 #[tokio::main]
