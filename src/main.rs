@@ -19,7 +19,8 @@ use tower::ServiceBuilder;
 async fn main() {
     let app = Router::new().route("/analyze", post(analyze_audio));
 
-    let addr = SocketAddr::from(([0, 0, 0, 0], 8080));
+  let addr = SocketAddr::from(([127, 0, 0, 1], 8088));
+
     println!("🚀 Serveur lancé sur http://{}", addr);
 
     axum::serve(tokio::net::TcpListener::bind(addr).await.unwrap(), app)
