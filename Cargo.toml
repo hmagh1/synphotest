@@ -3,8 +3,11 @@ name = "rust_audio_api"
 version = "0.1.0"
 edition = "2021"
 
+
+
 [dependencies]
 symphonia = { version = "0.5", features = ["aac", "mp3", "flac"] }
 axum = "0.7"
-tokio = { version = "1.38", features = ["full"] }
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
