@@ -1,24 +1,19 @@
-use axum::{
-    routing::post,
-    extract::Multipart,
-    response::IntoResponse,
-    Router,
-};
+use axum::{routing::post, extract::Multipart, response::IntoResponse, Router};
 use std::{net::SocketAddr, io::Write};
 use symphonia::core::probe::Hint;
-use symphonia::default::{get_codecs, get_probe};
+use symphonia::default::get_probe;
 use symphonia::core::io::MediaSourceStream;
 use symphonia::core::meta::MetadataOptions;
 use symphonia::core::formats::FormatOptions;
 use tempfile::NamedTempFile;
+use hyper::Server;
 
 #[tokio::main]
 async fn main() {
     let app = Router::new().route("/analyze", post(analyze_audio));
-
     let addr = SocketAddr::from(([0, 0, 0, 0], 8080));
     println!("🚀 Serveur lancé sur http://{}", addr);
-    axum::Server::bind(&addr)
+    Server::bind(&addr)
         .serve(app.into_make_service())
         .await
         .unwrap();
@@ -26,14 +21,13 @@ async fn main() {
 
 async fn analyze_audio(mut multipart: Multipart) -> impl IntoResponse {
     while let Some(field) = multipart.next_field().await.unwrap() {
-        let name = field.name().unwrap_or("file");
         let data = field.bytes().await.unwrap();
+        let name = field.name().unwrap_or("file");
 
         let mut tempfile = NamedTempFile::new().unwrap();
         tempfile.write_all(&data).unwrap();
         let path = tempfile.path().to_path_buf();
 
-        // Analyse avec Symphonia
         let file = std::fs::File::open(&path).unwrap();
         let mss = MediaSourceStream::new(Box::new(file), Default::default());
 
