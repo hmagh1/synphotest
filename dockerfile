@@ -4,17 +4,19 @@ FROM rust:1.77 AS builder
 WORKDIR /app
 COPY . .
 
-# Précaution : assure que le lockfile existe
+# Précharger les dépendances
 RUN cargo fetch
+
+# Compiler le projet
 RUN cargo build --release
 
-# Étape 2 : image légère
+# Étape 2 : image finale
 FROM debian:bullseye-slim
 
-# Install lib audio si besoin
+# Installer les bibliothèques audio nécessaires
 RUN apt-get update && apt-get install -y libasound2 && rm -rf /var/lib/apt/lists/*
 
-# Copie binaire depuis l’étape 1
+# Copier l'exécutable
 COPY --from=builder /app/target/release/rust_audio_api /app/app
 WORKDIR /app
 
