@@ -1,6 +1,11 @@
 FROM rust:1.77 as builder
 WORKDIR /app
+
 COPY . .
+
+# ⚠️ Ajoute cette ligne : génère un lockfile compatible dans Docker
+RUN cargo generate-lockfile
+
 RUN cargo build --release
 
 FROM debian:bullseye-slim
