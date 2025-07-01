@@ -3,7 +3,7 @@ name = "rust_audio_api"
 version = "0.1.0"
 edition = "2021"
 
-[[dependencies]
+[dependencies]
 symphonia = { version = "0.5", features = ["aac", "mp3", "flac"] }
 axum = { version = "0.7", features = ["multipart"] }
 tokio = { version = "1", features = ["full"] }
