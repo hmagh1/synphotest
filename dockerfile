@@ -1,7 +1,6 @@
 # Étape 1 : build
-FROM rust:1.77 as builder
+FROM rust:1.77 AS builder
 WORKDIR /app
-
 COPY . .
 RUN cargo build --release
 
