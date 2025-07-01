@@ -1,4 +1,9 @@
-use axum::{routing::post, extract::Multipart, response::IntoResponse, Router};
+use axum::{
+    routing::post,
+    extract::Multipart,
+    response::IntoResponse,
+    Router,
+};
 use std::{net::SocketAddr, io::Write};
 use symphonia::core::probe::Hint;
 use symphonia::default::get_probe;
@@ -11,8 +16,10 @@ use hyper::Server;
 #[tokio::main]
 async fn main() {
     let app = Router::new().route("/analyze", post(analyze_audio));
+
     let addr = SocketAddr::from(([0, 0, 0, 0], 8080));
     println!("🚀 Serveur lancé sur http://{}", addr);
+
     Server::bind(&addr)
         .serve(app.into_make_service())
         .await
@@ -20,9 +27,9 @@ async fn main() {
 }
 
 async fn analyze_audio(mut multipart: Multipart) -> impl IntoResponse {
-    while let Some(field) = multipart.next_field().await.unwrap() {
-        let data = field.bytes().await.unwrap();
-        let name = field.name().unwrap_or("file");
+    while let Some(mut field) = multipart.next_field().await.unwrap() {
+        let name = field.name().unwrap_or("file").to_string(); // 🔑 Clone ici
+        let data = field.bytes().await.unwrap();               // Puis consomme field
 
         let mut tempfile = NamedTempFile::new().unwrap();
         tempfile.write_all(&data).unwrap();
