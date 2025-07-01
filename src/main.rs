@@ -25,7 +25,7 @@ async fn analyze() -> Json<serde_json::Value> {
     let format = probed.format;
 
     Json(json!({
-        "format": format.format_name(), // ✅ correction ici
+        "format": format.get_type().name(), // ✅ correction ici
         "nb_tracks": format.tracks().len()
     }))
 }
